@@ -1,0 +1,22 @@
+{
+  "name": "post_api_node_mongoose",
+  "version": "1.0.0",
+  "description": "post api with mongoose and validation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pyTuner/post_api_mongoose.git"
+  },
+  "author": "tejas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pyTuner/post_api_mongoose/issues"
+  },
+  "homepage": "https://github.com/pyTuner/post_api_mongoose#readme",
+  "dependencies": {
+    "mongoose": "^7.4.1"
+  }
+}
