@@ -14,7 +14,7 @@ app.post('/create', async (req, res) => {
         res.send('done');
     }
     catch (err) {
-        console.log(err)
+        console.log(err.message)
         res.send(err)
     }
 })
