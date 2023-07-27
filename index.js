@@ -1,25 +1,32 @@
 const express = require('express');
 require('./config');
 const employees = require('./employee');
-const port = 3000;
 
+const port = 3000;
 const app = express();
+
 app.use(express.json())  // to convert request data into json format
 
 app.post('/create', async (req, res) => {
     try {
         let data = new employees(req.body);
-        let result = await data.save();
-        console.log(result)
-        res.send('done');
+        if (data.passwd != data.cpasswd) {
+            res.status(422).json({ error: "Missmatch password" })
+            // throw new Error('Password does not match!')
+        } else {
+            let result = await data.save();
+            // console.log(`${data} user register data`)
+            console.log(`${result}`)
+            res.send('done');
+        }
     }
     catch (err) {
-        console.log(err.message)
+        console.log(`$error txt >> ${err.message}`)
         res.send(err)
     }
 })
 
-app.get('/read', async (req, res) => {
+app.get('/read/', async (req, res) => {
     let data = await employees.find();  // doesnt require schema
     res.send(data);
     res.end()

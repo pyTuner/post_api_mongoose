@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcrypt');
 
 const nameVal = {
     type: String,
@@ -22,12 +23,12 @@ const emailVal = {
 }
 
 const mobnumVal = {
-    type: Number,
+    type: String,
     required: [true, `${this.key} is required`],
     unique: true,
     validate(value) {
-        if (typeof(value)!= Number && value < 5999999999 || value >= 9999999999) {
-            throw new Error("Incorrect Mobile number, Insure your number is correct!")
+        if (isNaN(value) && value < 5999999999 && value >= 9999999999) {
+            throw new Error("Invalied Mobile number, Insure your number is correct!")
         }
     }
 }
@@ -37,15 +38,13 @@ const subsciptionVal = {
     required: [true, `${this.key} is required`]
 }
 
-const password = {
-    validate(value) {
-        if (value.isStringPassword) {
-            throw new Error("Please use strong password")
-        }
-    }
+const passwordVal = {
+    type: String,
+    required: [true, 'Password err'],
+
 }
 
-
+// schema
 const employeeSchema = new mongoose.Schema({
     fname: nameVal,
     mname: {
@@ -56,8 +55,22 @@ const employeeSchema = new mongoose.Schema({
     email: emailVal,
     mobno: mobnumVal,
     subsciption: subsciptionVal,
+    passwd: passwordVal,
+    cpasswd: passwordVal
 })
-// console.log(stringVal);
+
+// middleware for password hashing
+employeeSchema.pre('save', async function (next) {
+    if (this.isModified('passwd')) {
+        // console.log('______________________________RUN___________________________')
+        this.passwd = await bcrypt.hash(this.passwd, 12);
+        this.cpasswd = await bcrypt.hash(this.cpasswd, 12);
+        // console.log('ecrypted');
+    }
+    next();
+})
+
+
 const employeeModel = mongoose.model('employees', employeeSchema);
 
 module.exports = employeeModel
