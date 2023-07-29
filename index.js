@@ -12,37 +12,59 @@ app.post('/create', async (req, res) => {
         let data = new employees(req.body);
         if (data.passwd != data.cpasswd) {
             res.status(422).json({ error: "Missmatch password" })
-            // throw new Error('Password does not match!')
-        } else {
+            // throw new Error('Password does not match!')    // exception should not throw in API, It break the flow
+        } else if (data.passwd.length > 26){
+            res.status(412).json({'error': "password lenght maximize!"});        
+        }   
+        else {
             let result = await data.save();
             // console.log(`${data} user register data`)
             console.log(`${result}`)
-            res.send('done');
+            res.status(200).json(result)
+            res.end();
         }
     }
     catch (err) {
-        console.log(`$error txt >> ${err.message}`)
-        res.send(err)
+        console.log(`$error txt>> ${err.message}`)
+        res.status(412).json({'error': err.message});
+        res.end();
     }
 })
 
 app.get('/read/', async (req, res) => {
-    let data = await employees.find();  // doesnt require schema
-    res.send(data);
-    res.end()
+    try {
+        let data = await employees.find();  // doesnt require schema
+        res.status(200).json(data);
+    } catch (err) {
+        console.log(`error msg>> ${err}`);
+        res.send(err);
+        res.end();
+    }
 })
 
 app.delete('/delete/:_id', async (req, res) => {
     console.log(req.params);
-    let data = await employees.deleteOne(req.params)
-    res.send(data);
+    try {
+        let data = await employees.deleteMany()
+        res.send(data);
+    } catch (err) {
+        console.log(`error txt>> ${err}`);
+        res.send(err);
+        res.end();
+    }
 })
 
 
 app.put('/update/:_id', async (req, res) => {
     console.log(req.params);
-    let data = await employees.updateOne(req.params, { $set: req.body })
-    res.send(data)
+    try {
+        let data = await employees.updateOne(req.params, { $set: req.body },  { runValidators: true })
+        res.send(data);
+    } catch (err) {
+        console.log(`error txt>> ${err}`);
+        res.send(err);
+        res.end();
+    }
 })
 
 app.listen(port);
