@@ -31,9 +31,21 @@ app.post('/create', async (req, res) => {
     }
 })
 
-app.get('/read/', async (req, res) => {
+app.get('/read/:key', async (req, res) => {
     try {
-        let data = await employees.find();  // doesnt require schema
+        console.log(req.params.key)
+        let data = await employees.find(
+            {
+                "$or":[
+                    { "fname" :{$regex:req.params.key}},
+                    { "mname" :{$regex:req.params.key}},
+                    { "lname" :{$regex:req.params.key}},
+                    { "email" :{$regex:req.params.key}},
+                    { "mobno" :{$regex:req.params.key}},
+                    { "subscription" :{$regex:req.params.key}}
+                ]
+            }
+            );  // doesnt require schema
         res.status(200).json(data);
     } catch (err) {
         console.log(`error msg>> ${err}`);

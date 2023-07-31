@@ -41,7 +41,7 @@ const mobnumVal = {
     }
 }
 
-const subsciptionVal = {
+const subscriptionVal = {
     type: Boolean,
     required: [true, `${this.key} is required`]
 }
@@ -75,7 +75,7 @@ const employeeSchema = new mongoose.Schema({
     lname: nameVal,
     email: emailVal,
     mobno: mobnumVal,
-    subsciption: subsciptionVal,
+    subscription: subscriptionVal,
     passwd: passwordVal,
     cpasswd: passwordVal
 }, { strict: 'throw' });
